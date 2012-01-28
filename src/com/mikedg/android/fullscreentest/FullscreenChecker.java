@@ -214,7 +214,7 @@ public class FullscreenChecker {
 
 	public void removeView() {
 		//FIXME: investigate to see if this throws an exception if the views are not added
-		if (usePreSystemUITrack) {
+		if (!usePreSystemUITrack) {
 			mManager.removeView(mViewFullScreenChangeWatcher);
 		}
 		mManager.removeView(mViewFullScreenSizeChecker);
