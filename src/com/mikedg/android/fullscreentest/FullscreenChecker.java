@@ -20,7 +20,7 @@ public class FullscreenChecker {
 	private boolean usePreSystemUITrack;
 
 	private static final int LAST_PRE_SYSTEM_UI_BUILD = Build.VERSION_CODES.GINGERBREAD_MR1;
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 
 	public FullscreenChecker(Context context, WindowManager manager) {
 		usePreSystemUITrack = (Build.VERSION.SDK_INT <= LAST_PRE_SYSTEM_UI_BUILD);
@@ -219,6 +219,7 @@ public class FullscreenChecker {
 
 	public void removeView() {
 		//FIXME: investigate to see if this throws an exception if the views are not added
+//		Need to check that these are attached...FullScreenChangeListener or not allow removal when not attache
 		if (!usePreSystemUITrack) {
 			mManager.removeView(mViewFullScreenChangeWatcher);
 		}
