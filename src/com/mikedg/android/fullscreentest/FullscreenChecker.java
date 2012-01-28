@@ -3,6 +3,7 @@ package com.mikedg.android.fullscreentest;
 import com.mikedg.android.fullscreentest.FullscreenChecker.FullScreenChangeListener;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.util.DisplayMetrics;
@@ -33,6 +34,42 @@ public class FullscreenChecker {
 			private int viewLastHeight;
 
 			@Override
+			public void onFinishTemporaryDetach() {
+				// TODO Auto-generated method stub
+				super.onFinishTemporaryDetach();
+			}
+
+			@Override
+			protected void onDisplayHint(int hint) {
+				// TODO Auto-generated method stub
+				super.onDisplayHint(hint);
+			}
+
+			@Override
+			protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+				// TODO Auto-generated method stub
+				super.onSizeChanged(w, h, oldw, oldh);
+			}
+
+			@Override
+			protected void onDraw(Canvas canvas) {
+				// TODO Auto-generated method stub
+				super.onDraw(canvas);
+			}
+
+			@Override
+			protected void onAttachedToWindow() {
+				// TODO Auto-generated method stub
+				super.onAttachedToWindow();
+			}
+
+			@Override
+			protected void onDetachedFromWindow() {
+				// TODO Auto-generated method stub
+				super.onDetachedFromWindow();
+			}
+
+			@Override
 			protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
 				Log.d("loc", "Size Checker: onLayout: bottom - top: " + (bottom - top)); // Appears
 																							// to
@@ -57,7 +94,7 @@ public class FullscreenChecker {
 					 */
 					// check last screen type too?
 					// track last fullscreen or mauybe just orientation change?
-					if (mLastScreenHeight != m.heightPixels) {
+					if (mLastScreenHeight == m.heightPixels) {
 						if (mFullscreenChangeListener != null) {
 							if (m.heightPixels == (bottom - top)) {
 								/* screenheight = layoutheight */
@@ -71,6 +108,7 @@ public class FullscreenChecker {
 																					// screen
 							}
 						}
+					} else {
 						mLastScreenHeight = m.heightPixels;
 					}
 				} else {
@@ -164,6 +202,8 @@ public class FullscreenChecker {
 				}
 			};
 		}
+		
+		mViewFullScreenSizeChecker.setBackgroundColor(0xbbff0000); //FIXME: put this to see how tings resize when switching types
 	}
 
 	public void addView() {
@@ -210,8 +250,10 @@ public class FullscreenChecker {
 			// notifier?
 			PixelFormat.TRANSLUCENT);
 
-	WindowManager.LayoutParams mViewFullScreenSizeCheckerParams = new WindowManager.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
-			WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | // ,
+	WindowManager.LayoutParams mViewFullScreenSizeCheckerParams = new WindowManager.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 
+			WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
+			WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | 
+			WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | // ,
 					// |
 					WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR, // onmeasure
 																		// does
