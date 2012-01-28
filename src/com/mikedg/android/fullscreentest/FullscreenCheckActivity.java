@@ -40,6 +40,10 @@ public class FullscreenCheckActivity extends Activity {
 		                                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 			}
 		});
-        startService(new Intent(this, SoftButtonService.class));
+    }
+    
+    public void onClick_runService(View view) {
+    	view.setEnabled(false);
+    	startService(new Intent(this, SoftButtonService.class));
     }
 }

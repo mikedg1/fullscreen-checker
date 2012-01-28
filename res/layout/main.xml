@@ -9,4 +9,11 @@
         android:layout_height="wrap_content"
         android:text="Touch me to flip on fullscreen. Just a simple dumb test. :)" />
 
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClick_runService"
+        android:text="Turn on service" />
+
 </LinearLayout>
