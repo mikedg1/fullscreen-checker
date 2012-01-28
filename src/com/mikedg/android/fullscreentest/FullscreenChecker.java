@@ -31,6 +31,7 @@ public class FullscreenChecker {
 		mViewFullScreenSizeChecker = new View(mContext) {
 			private int mLastScreenHeight;
 			private int viewLastHeight;
+			private boolean mFirstGoRoundHack = false;
 
 			@Override
 			public void onFinishTemporaryDetach() {
@@ -116,15 +117,28 @@ public class FullscreenChecker {
 					// way is likely more efficient and generally older devies
 					int thisHeight = bottom - top;
 
-					if (viewLastHeight != thisHeight && mViewFullScreenChangeWatcher != null) { // make
+					if ((viewLastHeight != thisHeight || mFirstGoRoundHack ) && mViewFullScreenChangeWatcher != null) { // make
 																								// sure
 																								// the
 																								// height
 						// actually changed
-						if (thisHeight == mViewFullScreenChangeWatcher.getHeight()) {
+						mFirstGoRoundHack = false;
+						int otherHeight = mViewFullScreenChangeWatcher.getHeight();
+						if (thisHeight == otherHeight) {
 							mFullscreenChangeListener.onFullscreen(); // Is
 																			// full
 																			// screen
+						} else if (otherHeight == 0) {
+							//This case is to handle situations where the other layout has not been laid out yet
+							/* 
+							 * 1/28/12 - Dual view mode - We had an issue reported where if the service was restarted while
+							 * you were in a fullscreen app, it did not trigger fullscreen mode. However, single view mode 
+							 * for older devices worked fine
+							 * http://code.google.com/p/birdbar/issues/detail?id=1
+							 */
+							mFirstGoRoundHack = true;
+							
+							//We also don't want to trigger not, so we tell first go round to continue
 						} else {
 							mFullscreenChangeListener.onNotFullscreen(); // Is
 																				// not
@@ -173,19 +187,23 @@ public class FullscreenChecker {
 
 				@Override
 				protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-					Log.d("loc", "Change Watcher: onLayout: bottom - top: " + (bottom - top)); // Appears
+//					Log.d("loc", "Change Watcher: onLayout: bottom - top: " + (bottom - top)); // Appears
 																								// to
 																								// give
 																								// correct
 																								// size
 
 					super.onLayout(changed, left, top, right, bottom);
-					DisplayMetrics m = new DisplayMetrics();
-					((WindowManager) this.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(m);
+//					DisplayMetrics m = new DisplayMetrics();
+//					((WindowManager) this.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(m);
 
-					Log.d("loc", "Size Checker: displayHeight: " + m.heightPixels);
-
-					Log.d("loc", "Change Watcher: onLayout: other size" + mViewFullScreenSizeChecker.getHeight());
+					
+//					Log.d("loc", "Size Checker: displayHeight: " + m.heightPixels);
+//
+//					Log.d("loc", "Change Watcher: onLayout: other size" + mViewFullScreenSizeChecker.getHeight());
+					
+					
+					
 					// Need to check orientation? can we just check
 					// fullscreeenedness? or should we just compare heights?
 					// Don't think we can compare fullscreenedness
