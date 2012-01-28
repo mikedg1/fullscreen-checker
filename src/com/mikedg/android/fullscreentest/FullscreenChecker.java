@@ -94,7 +94,8 @@ public class FullscreenChecker {
 					 */
 					// check last screen type too?
 					// track last fullscreen or mauybe just orientation change?
-					if (mLastScreenHeight == m.heightPixels) {
+//					if (mLastScreenHeight == m.heightPixels) { //Actually don't think this matters does it? or is it called twice?
+					if (viewLastHeight != (bottom - top)) {
 						if (mFullscreenChangeListener != null) {
 							if (m.heightPixels == (bottom - top)) {
 								/* screenheight = layoutheight */
