@@ -1,7 +1,5 @@
 package com.mikedg.android.fullscreentest;
 
-import com.mikedg.android.fullscreentest.FullscreenChecker.FullScreenChangeListener;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
@@ -99,11 +97,11 @@ public class FullscreenChecker {
 						if (mFullscreenChangeListener != null) {
 							if (m.heightPixels == (bottom - top)) {
 								/* screenheight = layoutheight */
-								mFullscreenChangeListener.onScreenChange(true); // Is
+								mFullscreenChangeListener.onFullscreen(); // Is
 																				// full
 																				// screen
 							} else {
-								mFullscreenChangeListener.onScreenChange(false); // is
+								mFullscreenChangeListener.onNotFullscreen(); // is
 																					// not
 																					// full
 																					// screen
@@ -123,11 +121,11 @@ public class FullscreenChecker {
 																								// height
 						// actually changed
 						if (thisHeight == mViewFullScreenChangeWatcher.getHeight()) {
-							mFullscreenChangeListener.onScreenChange(true); // Is
+							mFullscreenChangeListener.onFullscreen(); // Is
 																			// full
 																			// screen
 						} else {
-							mFullscreenChangeListener.onScreenChange(false); // Is
+							mFullscreenChangeListener.onNotFullscreen(); // Is
 																				// not
 																				// full
 																				// screen
@@ -215,6 +213,7 @@ public class FullscreenChecker {
 	}
 
 	public void removeView() {
+		//FIXME: investigate to see if this throws an exception if the views are not added
 		if (usePreSystemUITrack) {
 			mManager.removeView(mViewFullScreenChangeWatcher);
 		}
@@ -271,6 +270,7 @@ public class FullscreenChecker {
 	}
 
 	public interface FullScreenChangeListener {
-		public void onScreenChange(boolean isFullscreen);
+		public void onFullscreen();
+		public void onNotFullscreen();
 	}
 }

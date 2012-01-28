@@ -34,8 +34,13 @@ public class SoftButtonService extends Service {
 		fsc.setFullScreenChangeListener(new FullScreenChangeListener() {
 			
 			@Override
-			public void onScreenChange(boolean isFullscreen) {
-				Toast.makeText(SoftButtonService.this, "" + isFullscreen, Toast.LENGTH_SHORT).show();
+			public void onFullscreen() {
+				Toast.makeText(SoftButtonService.this, "Full", Toast.LENGTH_SHORT).show();
+			}
+			
+			@Override
+			public void onNotFullscreen() {
+				Toast.makeText(SoftButtonService.this, "Not full", Toast.LENGTH_SHORT).show();
 			}
 		});
 	}
