@@ -20,6 +20,7 @@ public class FullscreenChecker {
 	private boolean usePreSystemUITrack;
 
 	private static final int LAST_PRE_SYSTEM_UI_BUILD = Build.VERSION_CODES.GINGERBREAD_MR1;
+	private static final boolean DEBUG = true;
 
 	public FullscreenChecker(Context context, WindowManager manager) {
 		usePreSystemUITrack = (Build.VERSION.SDK_INT <= LAST_PRE_SYSTEM_UI_BUILD);
@@ -200,9 +201,13 @@ public class FullscreenChecker {
 					// status bar :(
 				}
 			};
+//			mViewFullScreenChangeWatcher.setVisibility(View.INVISIBLE); //Probably helps rendering a slight bit?, but I think this actually stops the layouts from happening :(
 		}
 		
-		mViewFullScreenSizeChecker.setBackgroundColor(0xbbff0000); //FIXME: put this to see how tings resize when switching types
+//		mViewFullScreenSizeChecker.setVisibility(View.INVISIBLE); //Probably helps rendering a slight bit?, but I think this actually stops the layouts from happening :(
+		if(DEBUG) {
+			mViewFullScreenSizeChecker.setBackgroundColor(0x99ff0000); //FIXME: put this to see how tings resize when switching types
+		}
 	}
 
 	public void addView() {
