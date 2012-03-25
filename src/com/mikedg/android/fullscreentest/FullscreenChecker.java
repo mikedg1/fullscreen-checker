@@ -15,6 +15,7 @@ public class FullscreenChecker {
 	private View mViewFullScreenSizeChecker;
 	Context mContext;
 	WindowManager mManager;
+	private boolean mFirstGoRoundHack = false; //Used to help handle situation where it's restarted whlie in a fullscreen state
 
 	private FullScreenChangeListener mFullscreenChangeListener;
 	private boolean usePreSystemUITrack;
@@ -31,7 +32,6 @@ public class FullscreenChecker {
 		mViewFullScreenSizeChecker = new View(mContext) {
 			private int mLastScreenHeight;
 			private int viewLastHeight;
-			private boolean mFirstGoRoundHack = false;
 
 			@Override
 			public void onFinishTemporaryDetach() {
@@ -136,9 +136,9 @@ public class FullscreenChecker {
 							 * for older devices worked fine
 							 * http://code.google.com/p/birdbar/issues/detail?id=1
 							 */
-							mFirstGoRoundHack = true;
-							
-							//We also don't want to trigger not, so we tell first go round to continue
+							mFirstGoRoundHack = true; 
+							mFullscreenChangeListener.onNotFullscreen(); //Now disable it, and the hack will check again next time
+							//This was due to a reported bug where we were not disabling on start from within the app
 						} else {
 							mFullscreenChangeListener.onNotFullscreen(); // Is
 																				// not
@@ -217,6 +217,35 @@ public class FullscreenChecker {
 					// size or that the sizing view == the screen width/height
 					// Won't work too great with the GNEX will it?cause of the
 					// status bar :(
+					if (mFirstGoRoundHack) {
+						mFirstGoRoundHack = false;
+					
+						//TODO: refactor this so it's not duplicated from above onLayout
+						int thisHeight = bottom - top;
+						int otherHeight = mViewFullScreenSizeChecker.getHeight();
+						
+						if (thisHeight == otherHeight) {
+							mFullscreenChangeListener.onFullscreen(); // Is
+																			// full
+																			// screen
+						} else if (otherHeight == 0) {
+							//This case is to handle situations where the other layout has not been laid out yet
+							/* 
+							 * 1/28/12 - Dual view mode - We had an issue reported where if the service was restarted while
+							 * you were in a fullscreen app, it did not trigger fullscreen mode. However, single view mode 
+							 * for older devices worked fine
+							 * http://code.google.com/p/birdbar/issues/detail?id=1
+							 */
+							mFirstGoRoundHack = true; 
+							mFullscreenChangeListener.onNotFullscreen(); //Now disable it, and the hack will check again next time
+							//This was due to a reported bug where we were not disabling on start from within the app
+						} else {
+							mFullscreenChangeListener.onNotFullscreen(); // Is
+																				// not
+																				// full
+																				// screen
+						}
+					}
 				}
 			};
 //			mViewFullScreenChangeWatcher.setVisibility(View.INVISIBLE); //Probably helps rendering a slight bit?, but I think this actually stops the layouts from happening :(
